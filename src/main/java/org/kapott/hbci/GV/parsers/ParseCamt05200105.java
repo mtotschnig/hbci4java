@@ -62,7 +62,7 @@ import org.kapott.hbci.structures.Konto;
 import org.kapott.hbci.structures.Saldo;
 import org.kapott.hbci.structures.Value;
 
-import jakarta.xml.bind.JAXB;
+import javax.xml.bind.JAXB;
 
 /**
  * Parser zum Lesen von Umsaetzen im CAMT.052 Format in Version 001.05.

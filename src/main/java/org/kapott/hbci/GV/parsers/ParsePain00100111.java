@@ -17,7 +17,7 @@ import org.kapott.hbci.sepa.jaxb.pain_001_001_11.PaymentInstruction40;
 import org.kapott.hbci.sepa.jaxb.pain_001_001_11.Purpose2Choice;
 import org.kapott.hbci.tools.StringUtil;
 
-import jakarta.xml.bind.JAXB;
+import javax.xml.bind.JAXB;
 
 
 /**

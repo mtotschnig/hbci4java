@@ -14,9 +14,9 @@ import javax.xml.validation.SchemaFactory;
 import org.kapott.hbci.exceptions.HBCI_Exception;
 import org.kapott.hbci.sepa.SepaVersion;
 
-import jakarta.xml.bind.JAXBContext;
-import jakarta.xml.bind.JAXBElement;
-import jakarta.xml.bind.Marshaller;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBElement;
+import javax.xml.bind.Marshaller;
 
 /**
  * Abstrakte Basis-Implementierung der SEPA-Generatoren.

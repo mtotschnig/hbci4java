@@ -14,7 +14,7 @@ import org.kapott.hbci.sepa.jaxb.pain_008_001_01.Pain00800101;
 import org.kapott.hbci.sepa.jaxb.pain_008_001_01.PaymentInstructionInformation5;
 import org.kapott.hbci.sepa.jaxb.pain_008_001_01.PaymentTypeInformation8;
 
-import jakarta.xml.bind.JAXB;
+import javax.xml.bind.JAXB;
 
 /**
  * Parser-Implementierung fuer Pain 008.001.01.

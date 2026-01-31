@@ -14,7 +14,7 @@ import org.kapott.hbci.sepa.jaxb.pain_001_001_02.Pain00100102;
 import org.kapott.hbci.sepa.jaxb.pain_001_001_02.PaymentIdentification1;
 import org.kapott.hbci.sepa.jaxb.pain_001_001_02.PaymentInstructionInformation4;
 
-import jakarta.xml.bind.JAXB;
+import javax.xml.bind.JAXB;
 
 
 /**

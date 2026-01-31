@@ -13,10 +13,10 @@ import org.kapott.hbci.manager.HBCIUtils;
 import org.kapott.hbci.sepa.SepaVersion;
 import org.kapott.hbci.tools.IOUtils;
 
-import jakarta.xml.bind.JAXB;
-import jakarta.xml.bind.JAXBContext;
-import jakarta.xml.bind.JAXBElement;
-import jakarta.xml.bind.Unmarshaller;
+import javax.xml.bind.JAXB;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBElement;
+import javax.xml.bind.Unmarshaller;
 
 
 

@@ -170,7 +170,12 @@ tasks.register('tag') {
 
 
 dependencies {
-  implementation 'jakarta.xml.bind:jakarta.xml.bind-api:4.0.2'
-  implementation 'org.glassfish.jaxb:jaxb-runtime:4.0.5'
+  jaxb 'javax.xml.bind:jaxb-api:2.3.1'
+  jaxb 'com.sun.xml.bind:jaxb-core:2.3.0.1'
+  jaxb 'com.sun.xml.bind:jaxb-impl:2.3.9'
+  jaxb 'com.sun.xml.bind:jaxb-xjc:2.3.9'
+  jaxb 'com.sun.activation:javax.activation:1.2.0'
+  implementation 'javax.xml.bind:jaxb-api:2.3.1'
+  implementation 'org.glassfish.jaxb:jaxb-runtime:2.3.9'
   testImplementation 'junit:junit:4.+'
 }

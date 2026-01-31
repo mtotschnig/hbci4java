@@ -20,7 +20,7 @@ import org.kapott.hbci.sepa.jaxb.pain_008_001_08.PersonIdentificationSchemeName1
 import org.kapott.hbci.sepa.jaxb.pain_008_001_08.Purpose2Choice;
 import org.kapott.hbci.tools.StringUtil;
 
-import jakarta.xml.bind.JAXB;
+import javax.xml.bind.JAXB;
 
 /**
  * Parser-Implementierung fuer Pain 008.001.08.
