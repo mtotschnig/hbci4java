@@ -111,7 +111,7 @@ mavenPublishing {
     // Wenn man es auf "false setzt, muss man zu "Deployments" im "Maven Central Portal" und dort auf "Publish" klicken.
     // https://vanniktech.github.io/gradle-maven-publish-plugin/central/#uploading-with-automatic-publishing
     publishToMavenCentral(true)
-    signAllPublications()
+    //signAllPublications()
     coordinates(project.groupId, project.name, project.version.toString())
 
     pom {
