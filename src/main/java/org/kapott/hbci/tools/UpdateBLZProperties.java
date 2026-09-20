@@ -33,8 +33,10 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Util-Klasse, welche die FinTS-Bankenliste im CSV-Format (kann von http://www.hbci-zka.de/institute/institut_hersteller.htm bezogen werden)
@@ -44,6 +46,13 @@ public class UpdateBLZProperties
 {
   private final static Charset CHARSET_INPUT = StandardCharsets.ISO_8859_1;
   private final static Charset CHARSET_OUTPUT = StandardCharsets.UTF_8;
+  
+  private final static Set<String> IGNORE_NAME = new HashSet<>();
+  
+  static
+  {
+    IGNORE_NAME.add("12030000"); // DKB - gibt es doppelt einmal als DKB und einmal als SKB - siehe https://github.com/hbci4j/hbci4java/discussions/135
+  }
 
   /**
    * @param args
@@ -87,7 +96,7 @@ public class UpdateBLZProperties
         final BLZEntry e = new BLZEntry(line);
         if (e.blz == null)
           continue;
-        
+
         blzData.put(e.blz,e);
       }
       //
@@ -231,6 +240,7 @@ public class UpdateBLZProperties
         return;
       
       this.updateBic(e.bic);
+      this.updateChecksumMethod(e.checksumMethod);
     }
 
     /**
@@ -265,6 +275,11 @@ public class UpdateBLZProperties
       current = current != null ? current.trim() : "";
       if (!current.equals(name))
       {
+        if (IGNORE_NAME.contains(this.blz))
+        {
+          System.out.println(blz + ": Ignoriere Namensänderung \"" + current + "\" -> \"" + name + "\"");
+          return;
+        }
         System.out.println(blz + ": Name \"" + current + "\" -> \"" + name + "\"");
         this.values[0] = name;
       }
@@ -302,6 +317,25 @@ public class UpdateBLZProperties
           System.out.println(blz + ": BIC \"" + current + "\" -> \"" + bic + "\"");
           this.values[2] = bic;
         }
+      }
+    }
+
+    /**
+     * Speichert die neue Checksum-Methode, wenn vorher keine da war oder eine andere.
+     * @param checksum die neue Checksum-Methode.
+     */
+    private void updateChecksumMethod(String checksum)
+    {
+      // Keine neue Checksum-Methode
+      if (checksum == null || checksum.isBlank())
+        return;
+
+      String current = this.values[3];
+      current = current != null ? current.trim() : "";
+      if (!current.equals(checksum))
+      {
+        System.out.println(blz + ": Checksum-Methode geändert \"" + current + "\" -> \"" + checksum + "\"");
+        this.values[3] = checksum;
       }
     }
 

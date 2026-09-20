@@ -35,12 +35,12 @@ import org.kapott.hbci.manager.IHandlerData;
 import org.kapott.hbci.manager.MsgGen;
 import org.kapott.hbci.passport.HBCIPassportInternal;
 import org.kapott.hbci.passport.HBCIPassportList;
+import org.kapott.hbci.passport.UserSig;
 import org.kapott.hbci.protocol.MSG;
 import org.kapott.hbci.protocol.MultipleSEGs;
 import org.kapott.hbci.protocol.MultipleSyntaxElements;
 import org.kapott.hbci.protocol.SEG;
 import org.kapott.hbci.protocol.SyntaxElement;
-import org.kapott.hbci.protocol.factory.SEGFactory;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
@@ -253,28 +253,28 @@ public final class Sig
                     
                     // create an empty sighead and sigtail segment for each required signature
                     for (int idx=0;idx<numOfPassports;idx++) {
-                        SEG sighead=SEGFactory.getInstance().createSEG("SigHeadUser","SigHead",msgName,numOfPassports-1-idx,gen.getSyntax());
-                        SEG sigtail=SEGFactory.getInstance().createSEG("SigTailUser","SigTail",msgName,idx,gen.getSyntax());
+                        SEG sighead=new SEG("SigHeadUser","SigHead",msgName,numOfPassports-1-idx,gen.getSyntax());
+                        SEG sigtail=new SEG("SigTailUser","SigTail",msgName,idx,gen.getSyntax());
                         
                         List<MultipleSyntaxElements> msgelements=msg.getChildContainers();
                         List<SyntaxElement> sigheads=((MultipleSEGs)(msgelements.get(1))).getElements();
                         List<SyntaxElement> sigtails=((MultipleSEGs)(msgelements.get(msgelements.size()-2))).getElements();
 
                         // insert sighead segment in msg
-                        if ((numOfPassports-1-idx)<sigheads.size()) {
-                            SEGFactory.getInstance().unuseObject(sigheads.get(numOfPassports-1-idx));
-                        } else {
-                            for (int i=sigheads.size()-1;i<numOfPassports-1-idx;i++) {
+                        if ((numOfPassports-1-idx)>=sigheads.size())
+                        {
+                            for (int i=sigheads.size()-1;i<numOfPassports-1-idx;i++)
+                            {
                                 sigheads.add(null);
                             }
                         }
                         sigheads.set(numOfPassports-1-idx,sighead);
                         
                         // insert sigtail segment in message
-                        if (idx<sigtails.size()) {
-                            SEGFactory.getInstance().unuseObject(sigtails.get(idx));
-                        } else {
-                            for (int i=sigtails.size()-1;i<idx;i++) {
+                        if (idx>=sigtails.size())
+                        {
+                            for (int i=sigtails.size()-1;i<idx;i++)
+                            {
                                 sigtails.add(null);
                             }
                         }
@@ -337,22 +337,13 @@ public final class Sig
 
                         if (passport.needUserSig())
                         {
-                            String pintan=new String(signature,Comm.ENCODING);
-                            int pos=pintan.indexOf("|");
+                          final String[] pinTan = UserSig.decode(signature);
+                          msg.propagateValue(sigtail.getPath()+".UserSig.pin",pinTan[0],SyntaxElement.DONT_TRY_TO_CREATE,SyntaxElement.DONT_ALLOW_OVERWRITE);
 
-                            // PIN/TAN-Signatur
-                            if (pos!=-1)
-                            {
-                                String pin = pintan.substring(0,pos);
-                                msg.propagateValue(sigtail.getPath()+".UserSig.pin",pin,SyntaxElement.DONT_TRY_TO_CREATE,SyntaxElement.DONT_ALLOW_OVERWRITE);
-
-                                // TAN nur senden, wenn vorhanden. Andernfalls lassen wir das DE komplett weg
-                                if (pos<pintan.length()-1)
-                                {
-                                  String tan = pintan.substring(pos+1);
-                                  msg.propagateValue(sigtail.getPath()+".UserSig.tan",tan,SyntaxElement.DONT_TRY_TO_CREATE,SyntaxElement.DONT_ALLOW_OVERWRITE);
-                                }
-                            }
+                          // TAN nur senden, wenn vorhanden. Andernfalls lassen wir das DE komplett weg
+                          if (pinTan[1].length() > 0)
+                            msg.propagateValue(sigtail.getPath()+".UserSig.tan",pinTan[1],SyntaxElement.DONT_TRY_TO_CREATE,SyntaxElement.DONT_ALLOW_OVERWRITE);
+                          
                         }
                         else
                         {
@@ -480,12 +471,12 @@ public final class Sig
                         ret=false;
                     }
                 } else {
-                    HBCIUtils.log("message has no signature",HBCIUtils.LOG_WARN);
-                    /* das ist nur für den fall, dass das institut prinzipiell nicht signiert
-                       (also für den client-code);
-                       die verify()-funktion für den server-code überprüft selbstständig, ob
-                       tatsächlich eine benötigte signatur vorhanden ist (verlässt sich also nicht
-                       auf dieses TRUE, was beim fehlen einer signatur zurückgegeben wird */
+                    HBCIUtils.log("message has no signature",HBCIUtils.LOG_DEBUG);
+                    /* das ist nur fuer den fall, dass das institut prinzipiell nicht signiert
+                       (also fuer den client-code);
+                       die verify()-funktion fuer den server-code ueberprueft selbststaendig, ob
+                       tatsaechlich eine benoetigte signatur vorhanden ist (verlaesst sich also nicht
+                       auf dieses TRUE, was beim fehlen einer signatur zurueckgegeben wird */
                     ret=true;
                 }
             } else {
